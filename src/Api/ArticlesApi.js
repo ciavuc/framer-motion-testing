@@ -16,7 +16,7 @@ const ArticlesLoadPhaseErrored = "errored";
 const getArticlesFromAPI = async () => {
   let url =
     "http://newsapi.org/v2/top-headlines?" +
-    "country=us&" +
+    "country=gb&" +
     "apiKey=eae5a7cb8bc745a398d9fdef94869da6";
   return axios.get(url).then((res) => {
     return res;

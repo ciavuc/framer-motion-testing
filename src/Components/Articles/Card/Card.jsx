@@ -2,7 +2,20 @@ import React from "react";
 import styles from "./Card.module.scss";
 
 function Card({ article }) {
-  return <div className={styles.card}>{article.title}</div>;
+  return (
+    <a
+      className={styles.card}
+      href={article.url}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {article.urlToImage && (
+        <figure style={{ backgroundImage: `url(${article.urlToImage})` }} />
+      )}
+      <small>{article.source.name}</small>
+      <h2>{article.title}</h2>
+    </a>
+  );
 }
 
 export default Card;

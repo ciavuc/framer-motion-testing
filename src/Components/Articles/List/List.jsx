@@ -1,4 +1,5 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useState, useReducer, useEffect } from "react";
+import { motion } from "framer-motion";
 import styles from "./List.module.scss";
 
 import {
@@ -13,14 +14,58 @@ import {
   ArticlesLoadPhaseNotStarted,
 } from "../../../Api/ArticlesApi";
 import Card from "../Card/Card";
+import Loader from "../../Loader/Loader";
+import Article from "../Article/Article";
 
 const Content = ({ articles }) => {
+  // animations
+  const containerVariants = {
+    start: {
+      transition: {
+        staggerChildren: 0.5,
+      },
+    },
+    end: {
+      transition: {
+        staggerChildren: 0.5,
+      },
+    },
+  };
+  const cardVariants = {
+    start: {
+      y: 50,
+      opacity: 0,
+    },
+    end: {
+      y: 0,
+      opacity: 1,
+    },
+  };
+  const transition = {
+    duration: 0.5,
+    ease: "easeInOut",
+  };
   return (
-    <div className={styles.articles}>
-      {articles.map((article) => {
-        return <Card article={article} />;
-      })}
-    </div>
+    <>
+      <motion.div
+        className={styles.articles}
+        variants={containerVariants}
+        initial="start"
+        animate="end"
+      >
+        {articles.map((article) => {
+          return (
+            <motion.div
+              transition={transition}
+              variants={cardVariants}
+              key={article.publishedAt}
+            >
+              <Card article={article} />
+            </motion.div>
+          );
+        })}
+      </motion.div>
+    </>
   );
 };
 
@@ -52,7 +97,7 @@ function List() {
     case ArticlesLoadPhaseLoading:
     case ArticlesLoadPhaseNotStarted:
     default:
-      content = <h1>Loading</h1>;
+      content = <Loader />;
       break;
   }
 
