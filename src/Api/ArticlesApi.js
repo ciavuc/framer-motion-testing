@@ -13,24 +13,27 @@ const ArticlesLoadPhaseUpdating = "updating";
 const ArticlesLoadPhaseUpdated = "updated";
 const ArticlesLoadPhaseErrored = "errored";
 
-const getArticlesFromAPI = async () => {
+const getArticlesFromAPI = async (pageNo) => {
+  console.log("getArticlesFromAPI", pageNo);
   let url =
     "http://newsapi.org/v2/top-headlines?" +
     "country=gb&" +
+    `page=${pageNo}&` +
+    "pageSize=1&" +
     "apiKey=eae5a7cb8bc745a398d9fdef94869da6";
   return axios.get(url).then((res) => {
     return res;
   });
 };
 
-const loadArticlesData = async (userDetails, dispatch) => {
+const loadArticlesData = async (pageNo, dispatch) => {
   try {
     dispatch({
       type: ArticlesActionWillLoad,
       articles: [],
     });
 
-    const res = await getArticlesFromAPI();
+    const res = await getArticlesFromAPI(pageNo);
     console.log("response:", res);
 
     const { articles } = res.data;
@@ -59,11 +62,11 @@ const emptyDashboard = {
 };
 
 const ArticlesReducer = (dashboardState, action) => {
-  const { type, userDetails = null, dispatch } = action;
+  const { type, pageNo, dispatch } = action;
 
   switch (type) {
     case ArticlesActionStartLoad:
-      loadArticlesData(userDetails, dispatch);
+      loadArticlesData(pageNo, dispatch);
       return dashboardState;
 
     case ArticlesActionWillLoad:

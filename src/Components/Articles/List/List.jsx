@@ -17,7 +17,7 @@ import Card from "../Card/Card";
 import Loader from "../../Loader/Loader";
 import Article from "../Article/Article";
 
-const Content = ({ articles }) => {
+const Content = ({ articles, loadArticles }) => {
   // animations
   const containerVariants = {
     start: {
@@ -64,6 +64,13 @@ const Content = ({ articles }) => {
             </motion.div>
           );
         })}
+        <button
+          onClick={() => {
+            loadArticles();
+          }}
+        >
+          Load More
+        </button>
       </motion.div>
     </>
   );
@@ -74,14 +81,31 @@ function List() {
     ArticlesReducer,
     emptyDashboard
   );
+
   const { loadPhase, articles = [] } = dashboardState;
+
+  const [pageNo, setpageNo] = useState(1);
+
+  useEffect(() => {
+    console.log('1')
+    dashboardDispatch({
+      type: ArticlesActionStartLoad,
+      pageNo: pageNo,
+      dispatch: dashboardDispatch,
+    });
+  }, []);
 
   useEffect(() => {
     dashboardDispatch({
       type: ArticlesActionStartLoad,
       dispatch: dashboardDispatch,
+      pageNo,
     });
-  }, [dashboardDispatch]);
+  }, [pageNo]);
+
+  const loadArticles = async () => {
+    setpageNo(pageNo + 1);
+  };
 
   let content = null;
 
@@ -89,7 +113,13 @@ function List() {
     case ArticlesLoadPhaseLoaded:
     case ArticlesLoadPhaseUpdated:
     case ArticlesLoadPhaseUpdating:
-      content = <Content articles={articles} />;
+      content = (
+        <Content
+          articles={articles}
+          loadArticles={loadArticles}
+          page={pageNo}
+        />
+      );
       break;
     case ArticlesLoadPhaseErrored:
       content = <div>Something has gone wrong</div>;
