@@ -1,18 +1,24 @@
 import React from "react";
+import { motion } from "framer-motion";
+
 import styles from "./Article.module.scss";
 
 function Article({ article }) {
   return (
     <div className={styles.article}>
-      <figure
+      <motion.figure
+        layoutId={article.urlToImage}
         style={
           article.urlToImage && {
             backgroundImage: `url(${article.urlToImage})`,
           }
         }
-      />
-      <small>{article.source.name}</small>
-      <h2>{article.title}</h2>
+      >
+        <h1>{article.title}</h1>
+      </motion.figure>
+      <div className={styles.content}>
+        <p>{article.description}</p>
+      </div>
     </div>
   );
 }

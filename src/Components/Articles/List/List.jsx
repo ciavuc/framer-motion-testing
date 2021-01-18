@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimateSharedLayout, AnimatePresence } from "framer-motion";
 import styles from "./List.module.scss";
 
 import {
@@ -18,6 +18,8 @@ import Loader from "../../Loader/Loader";
 import Article from "../Article/Article";
 
 const Content = ({ articles, loadArticles }) => {
+  const [activeArticle, setActiveArticle] = useState(null);
+
   // animations
   const containerVariants = {
     start: {
@@ -46,25 +48,29 @@ const Content = ({ articles, loadArticles }) => {
     ease: "easeInOut",
   };
   return (
-    <>
+    <AnimateSharedLayout type="crossfade">
       <motion.div
         className={styles.articles}
         variants={containerVariants}
         initial="start"
         animate="end"
       >
-        {articles.map((article) => {
+        {articles.map((article, i) => {
           return (
             <motion.div
               transition={transition}
               variants={cardVariants}
-              key={article.publishedAt}
+              key={i}
+              onClick={() => {
+                setActiveArticle(article);
+              }}
             >
               <Card article={article} />
             </motion.div>
           );
         })}
         <button
+          className={styles.loadMore}
           onClick={() => {
             loadArticles();
           }}
@@ -72,7 +78,15 @@ const Content = ({ articles, loadArticles }) => {
           Load More
         </button>
       </motion.div>
-    </>
+
+      <AnimatePresence>
+        {activeArticle && (
+          <>
+            <Article article={activeArticle} />
+          </>
+        )}
+      </AnimatePresence>
+    </AnimateSharedLayout>
   );
 };
 
@@ -85,15 +99,6 @@ function List() {
   const { loadPhase, articles = [] } = dashboardState;
 
   const [pageNo, setpageNo] = useState(1);
-
-  useEffect(() => {
-    console.log('1')
-    dashboardDispatch({
-      type: ArticlesActionStartLoad,
-      pageNo: pageNo,
-      dispatch: dashboardDispatch,
-    });
-  }, []);
 
   useEffect(() => {
     dashboardDispatch({

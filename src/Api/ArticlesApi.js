@@ -14,12 +14,11 @@ const ArticlesLoadPhaseUpdated = "updated";
 const ArticlesLoadPhaseErrored = "errored";
 
 const getArticlesFromAPI = async (pageNo) => {
-  console.log("getArticlesFromAPI", pageNo);
   let url =
     "http://newsapi.org/v2/top-headlines?" +
     "country=gb&" +
     `page=${pageNo}&` +
-    "pageSize=1&" +
+    "pageSize=5&" +
     "apiKey=eae5a7cb8bc745a398d9fdef94869da6";
   return axios.get(url).then((res) => {
     return res;
@@ -35,7 +34,6 @@ const loadArticlesData = async (pageNo, dispatch) => {
 
     const res = await getArticlesFromAPI(pageNo);
     console.log("response:", res);
-
     const { articles } = res.data;
 
     dispatch({

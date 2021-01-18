@@ -1,20 +1,19 @@
 import React from "react";
+import { motion } from "framer-motion";
 import styles from "./Card.module.scss";
 
-function Card({ article }) {
+function Card({ article, first }) {
   return (
-    <a
-      className={styles.card}
-      href={article.url}
-      target="_blank"
-      rel="noreferrer"
-    >
+    <div className={`${styles.card} ${styles.first}`}>
       {article.urlToImage && (
-        <figure style={{ backgroundImage: `url(${article.urlToImage})` }} />
+        <motion.figure
+          layoutId={article.urlToImage}
+          style={{ backgroundImage: `url(${article.urlToImage})` }}
+        />
       )}
       <small>{article.source.name}</small>
       <h2>{article.title}</h2>
-    </a>
+    </div>
   );
 }
 
